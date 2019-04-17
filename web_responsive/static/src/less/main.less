@@ -1,5 +1,7 @@
 /* Copyright 2016 LasLabs Inc.
+ * Copyright 2019 Alexandre Díaz
  * License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl). */
+
 
 body {
     width: 100%;
@@ -46,6 +48,19 @@ main {
 }
 
 .o_web_client {
+    &.o_fullscreen {
+        #oe_main_menu_navbar,
+        .o_main .o_sub_menu,
+        .navbar,
+        .main-nav{
+            display: none
+        }
+    }
+
+    >.o_loading {
+        z-index: 10;
+    }
+
     >.o_main {
         overflow: auto;
         > .o_main_content {
