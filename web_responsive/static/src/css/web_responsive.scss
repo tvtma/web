@@ -170,9 +170,10 @@
         }
 
         .o-app-icon {
-            height: auto;
-            max-width: 7rem;
-            width: 100%;
+		    position: relative;
+		    max-width: 70px;
+		    overflow: hidden;
+		    margin: auto;
         }
 
         // Search input for menus
