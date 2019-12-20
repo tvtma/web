@@ -508,7 +508,6 @@ html .o_web_client .o_action_manager .o_action {
                     flex: 0 0 35%;
                     max-width: initial;
                     min-width: initial;
-                    overflow: auto;
 
                     .o_chatter_header_container {
                         padding-top: $grid-gutter-width * 0.5;
@@ -516,7 +515,6 @@ html .o_web_client .o_action_manager .o_action {
                         position: sticky;
                         background-color: $o-view-background-color;
                         z-index: 1;
-                        overflow-x: auto;
 
                         // Scrollable input text to avoid hide conversation & buttons
                         .o_composer_text_field {
