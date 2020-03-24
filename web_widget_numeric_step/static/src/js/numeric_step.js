@@ -13,13 +13,14 @@ odoo.define('web_widget_numeric_step.field', function (require) {
     var NumericStep = FieldFloat.extend({
         template: 'web_widget_numeric_step',
         className: 'o_field_numeric_step o_field_number',
-        events: _.extend({}, FieldFloat.prototype.events, {
+        events: _.extend({}, _.omit(FieldFloat.prototype.events, ['change', 'input']), {
             'mousedown .btn_numeric_step': '_onStepMouseDown',
             'touchstart .btn_numeric_step': '_onStepMouseDown',
             'click .btn_numeric_step': '_onStepClick',
             'wheel .input_numeric_step': '_onWheel',
             'keydown .input_numeric_step': '_onKeyDown',
             'change .input_numeric_step': '_onChange',
+            'input .input_numeric_step': '_onInput',
         }),
         supportedFieldTypes: ['float', 'integer'],
 
@@ -27,6 +28,9 @@ odoo.define('web_widget_numeric_step.field', function (require) {
         DEF_CLICK_DELAY: 400,
         MIN_DELAY: 50,
         SUBSTRACT_DELAY_STEP: 25,
+
+        DELAY_THROTTLE_CHANGE: 200,
+
 
         init: function () {
             this._super.apply(this, arguments);
@@ -44,6 +48,11 @@ odoo.define('web_widget_numeric_step.field', function (require) {
                 'min': Number(min_val),
                 'max': Number(max_val),
             };
+
+            var self = this;
+            this._lazyOnChangeTrigger = _.debounce(function() {
+                self.$input.trigger("change");
+            }, this.DELAY_THROTTLE_CHANGE);
         },
 
         /**
@@ -123,18 +132,26 @@ odoo.define('web_widget_numeric_step.field', function (require) {
          * @param {String} mode can be "plus" or "minus"
          */
         _doStep: function (mode) {
-            var cval = Number(this.$input.val());
-            if (_.isNaN(cval)) {
-                return;
+            var cval = 0;
+            try {
+                var field = this.record.fields[this.name];
+                cval = field_utils.parse[field.type](this.$input.val())
+            } catch {
+                cval = this.value;
+                mode = false; // Only set the value in this case
             }
             if (mode === 'plus') {
                 cval += this._config.step;
             } else if (mode === 'minus') {
                 cval -= this._config.step;
             }
-            this.$input.val(this._sanitizeNumberValue(cval));
-            this.isDirty = true;
-            this._doDebouncedAction();
+            var nval = this._sanitizeNumberValue(cval);
+            if (nval !== this.lastSetValue || !mode) {
+                this.$input.val(nval);
+                // Every time that user update the value we must trigger an
+                // onchange method.
+                this._lazyOnChangeTrigger();
+            }
         },
 
         // Handle Events
@@ -198,10 +215,11 @@ odoo.define('web_widget_numeric_step.field', function (require) {
         /**
          * Sanitize user input value
          *
-         * @param {ChangeEvent} ev
+         * @override
          */
         _onChange: function (ev) {
             ev.target.value = this._sanitizeNumberValue(ev.target.value);
+            return this._super.apply(this, arguments);
         },
 
         // Helper Functions
