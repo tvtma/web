@@ -85,3 +85,11 @@ Features for computers:
   width preview clicking on the new maximize button.
 
   .. image:: ../static/img/document_viewer.gif
+
+* Bigger checkboxes in list view
+
+  .. image:: ../static/img/big_checkboxes.gif
+
+* Scrollable dropdowns
+
+  .. image:: ../static/img/dropdown_scroll.gif
