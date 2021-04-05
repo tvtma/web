@@ -315,10 +315,6 @@ $chatter_zone_width: 35%;
     }
 }
 
-.o_chatter_header_container .o_composer_mention_dropdown .dropdown-menu.show{
-	bottom: unset;
-}
-
 // Scroll all but top bar
 html .o_web_client .o_action_manager .o_action {
     @include media-breakpoint-down(sm) {
@@ -614,6 +610,7 @@ html .o_web_client .o_action_manager .o_action {
                     flex: 0 0 $chatter_zone_width;
                     max-width: initial;
                     min-width: initial;
+                    overflow: auto;
 
                     .o_chatter_header_container {
                         padding-top: $grid-gutter-width * 0.5;
